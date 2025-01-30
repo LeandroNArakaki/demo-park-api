@@ -45,7 +45,10 @@ public class ErrorMessage {
     }
 
     private void addErrors(BindingResult result) {
-        this.errors = result.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, fieldError -> fieldError.getDefaultMessage()));
+        this.errors = new HashMap<>();
+        for (FieldError fieldError : result.getFieldErrors()) {
+            this.errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
     }
 
 
