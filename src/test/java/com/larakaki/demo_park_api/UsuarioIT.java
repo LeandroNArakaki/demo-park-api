@@ -30,7 +30,7 @@ public class UsuarioIT {
                 .post()
                 .uri("/api/v1/usuarios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioCreateDto("tody@gmail.com", "123456"))
+                .bodyValue(new UsuarioCreateDto("tody@email.com", "123456"))
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody(UsuarioResponseDto.class)
@@ -38,7 +38,7 @@ public class UsuarioIT {
 
         assertThat(responseBody).isNotNull();
         assertThat(responseBody.getId()).isNotNull();
-        assertThat(responseBody.getUsername()).isEqualTo("tody@gmail.com");
+        assertThat(responseBody.getUsername()).isEqualTo("tody@email.com");
         assertThat(responseBody.getRole()).isEqualTo("CLIENTE");
 
     }
@@ -92,7 +92,7 @@ public class UsuarioIT {
                 .post()
                 .uri("/api/v1/usuarios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioCreateDto("tody@gmail.com", ""))
+                .bodyValue(new UsuarioCreateDto("tody@email.com", ""))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
                 .expectBody(ErrorMessage.class)
@@ -105,7 +105,7 @@ public class UsuarioIT {
                 .post()
                 .uri("/api/v1/usuarios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioCreateDto("tody@gmail.com", "123"))
+                .bodyValue(new UsuarioCreateDto("tody@email.com", "123"))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
                 .expectBody(ErrorMessage.class)
@@ -118,7 +118,7 @@ public class UsuarioIT {
                 .post()
                 .uri("/api/v1/usuarios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioCreateDto("tody@gmail.com", "12345678"))
+                .bodyValue(new UsuarioCreateDto("tody@email.com", "12345678"))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
                 .expectBody(ErrorMessage.class)
@@ -135,7 +135,7 @@ public class UsuarioIT {
                 .post()
                 .uri("/api/v1/usuarios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioCreateDto("ana@gmail.com", "123456"))
+                .bodyValue(new UsuarioCreateDto("ana@email.com", "123456"))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT)
                 .expectBody(ErrorMessage.class)
