@@ -1,5 +1,6 @@
 package com.larakaki.demo_park_api.config;
 
+import com.larakaki.demo_park_api.jwt.JwtAuthenticationEntryPoint;
 import com.larakaki.demo_park_api.jwt.JwtAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @Configuration
 @EnableWebMvc
 @EnableMethodSecurity
@@ -28,11 +31,19 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(auth -> {
                             auth.requestMatchers(HttpMethod.POST, "/api/v1/usuarios").permitAll();
                             auth.requestMatchers(HttpMethod.POST, "/api/v1/auth").permitAll();
+                            auth.requestMatchers(
+                                    antMatcher("/docs-park.html"),
+                                    antMatcher("/docs-park/**"),
+                                    antMatcher("/swagger-ui.html"),
+                                    antMatcher("/swagger-ui/**"),
+                                    antMatcher("/webjars/**")
+                            ).permitAll();
                             auth.anyRequest().authenticated();
                         }
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
                 .build();
     }
 
