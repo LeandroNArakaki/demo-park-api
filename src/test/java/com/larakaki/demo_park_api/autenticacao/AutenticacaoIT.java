@@ -1,7 +1,6 @@
-package com.larakaki.demo_park_api;
+package com.larakaki.demo_park_api.autenticacao;
 
 
-import com.larakaki.demo_park_api.dto.UsuarioCreateDto;
 import com.larakaki.demo_park_api.dto.UsuarioLoginDto;
 import com.larakaki.demo_park_api.exception.ErrorMessage;
 import com.larakaki.demo_park_api.jwt.JwtToken;

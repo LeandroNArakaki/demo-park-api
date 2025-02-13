@@ -1,5 +1,6 @@
-package com.larakaki.demo_park_api;
+package com.larakaki.demo_park_api.usuario;
 
+import com.larakaki.demo_park_api.JwtAuthentication;
 import com.larakaki.demo_park_api.dto.UsuarioCreateDto;
 import com.larakaki.demo_park_api.dto.UsuarioResponseDto;
 import com.larakaki.demo_park_api.dto.UsuarioSenhaDto;
