@@ -51,7 +51,7 @@ public class ClienteController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Recurso criado com sucesso",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteResponseDto.class))),
-                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil ADMIN",
+                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de ADMIN",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "409", description = "Cliente CPF já possui cadastrado no sistema",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
@@ -70,12 +70,12 @@ public class ClienteController {
 
     @Operation(summary = "Localizar um cliente",
             description = "Recurso para localizar um novo cliente vinculado a um usuário cadastrado." +
-            "Requisição exige um Bearer token. Acesso restrito a Role = 'ADMIN'",
+                    "Requisição exige um Bearer token. Acesso restrito a Role = 'ADMIN'",
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recurso localizado com sucesso",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteResponseDto.class))),
-                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil CLIENTE",
+                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de CLIENTE",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "404", description = "Cliente não encontrado",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
@@ -94,26 +94,26 @@ public class ClienteController {
             description = "Requisição exige um Bearer token. Acesso restrito a ADMIN",
             security = @SecurityRequirement(name = "security"),
             parameters = {
-                @Parameter(in = ParameterIn.QUERY, name = "page",content = @Content(schema = @Schema(type = "integer", defaultValue = "0")),
-                        description = "Representa a página retornada"
+                    @Parameter(in = ParameterIn.QUERY, name = "page", content = @Content(schema = @Schema(type = "integer", defaultValue = "0")),
+                            description = "Representa a página retornada"
 
-                ),
-                @Parameter(in = ParameterIn.QUERY, name = "size",content = @Content(schema = @Schema(type = "integer", defaultValue = "20")),
-                        description = "Representa o total de elementos por página"
+                    ),
+                    @Parameter(in = ParameterIn.QUERY, name = "size", content = @Content(schema = @Schema(type = "integer", defaultValue = "20")),
+                            description = "Representa o total de elementos por página"
 
-                ),
-                @Parameter(in = ParameterIn.QUERY, name = "sort", hidden = true,
-                        content = @Content(schema = @Schema(type = "string", defaultValue = "id,asc")),
-                        description = "Representa a ordenação dos resultados. Aceita multíplos critérios de ordenação."
+                    ),
+                    @Parameter(in = ParameterIn.QUERY, name = "sort", hidden = true,
+                            content = @Content(schema = @Schema(type = "string", defaultValue = "id,asc")),
+                            description = "Representa a ordenação dos resultados. Aceita multíplos critérios de ordenação."
 
-                )
+                    )
             },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recurso recuperado com sucesso",
                             content = @Content(mediaType = "application/json",
                                     array = @ArraySchema(schema = @Schema(implementation = ClienteResponseDto.class)))
                     ),
-                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil CLIENTE",
+                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de CLIENTE",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
             }
     )
@@ -122,6 +122,26 @@ public class ClienteController {
     public ResponseEntity<PageableDto> getAll(@Parameter(hidden = true) @PageableDefault(size = 5, sort = {"nome"}) Pageable pageable) {
         Page<ClienteProjection> clientes = clienteService.buscarTodos(pageable);
         return ResponseEntity.ok(PageableMapper.toDto(clientes));
+    }
+
+
+    @Operation(summary = "Recuperar dados do cliente autenticado",
+            description = "Recurso para localizar um novo cliente vinculado a um usuário cadastrado." +
+                    "Requisição exige um Bearer token. Acesso restrito a Role = 'CLIENTE'",
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Recurso recuperado com sucesso",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteResponseDto.class))),
+                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de ADMIN",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            }
+
+    )
+    @GetMapping("/detalhes")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<ClienteResponseDto> getDetalhes(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        Cliente cliente = clienteService.buscarPorUsuarioId(userDetails.getId());
+        return ResponseEntity.ok(ClienteMapper.toDto(cliente));
     }
 
 
