@@ -6,7 +6,6 @@ import com.larakaki.demo_park_api.exception.EntityNotFoundException;
 import com.larakaki.demo_park_api.repository.ClienteRepository;
 import com.larakaki.demo_park_api.repository.projection.ClienteProjection;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -42,4 +41,11 @@ public class ClienteService {
     public Cliente buscarPorUsuarioId(Long id) {
         return clienteRepository.findByUsuarioId(id);
     }
+
+    @Transactional(readOnly = true)
+    public Cliente buscarPorCpf(String cpf) {
+        return clienteRepository.findByCpf(cpf).orElseThrow(() -> new EntityNotFoundException(String.format("Cliente com CPF '%s' não encontrado", cpf)));
+    }
+
+
 }
