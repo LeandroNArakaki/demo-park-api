@@ -24,4 +24,9 @@ public class ClienteVagaService {
                 () -> new EntityNotFoundException(String.format("Recibo '%s' não encontrada no sistema ou checkout já realizado", recibo))
         );
     }
+
+    @Transactional(readOnly = true)
+    public long getTotalDeVezesEstacionamentoCompleto(String cpf) {
+        return clienteVagaRepository.countByClienteCpfAndDataSaidaIsNotNull(cpf);
+    }
 }
