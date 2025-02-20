@@ -234,5 +234,35 @@ public class EstacionamentoIT {
 
     }
 
+    @Test
+    public void criarCheckOut_ComReciboInexistente_RetornarErrorMessageStatus404() {
+        testClient
+                .put()
+                .uri("/api/v1/estacionamentos/check-out/{recibo}", "20230313-0000")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com.br", "123456"))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("status").isEqualTo(404)
+                .jsonPath("path").isEqualTo("/api/v1/estacionamentos/check-out/20230313-0000")
+                .jsonPath("method").isEqualTo("PUT");
+
+    }
+
+    @Test
+    public void criarCheckOut_ComRoleCliente_RetornarErrorMessageStatus403() {
+        testClient
+                .put()
+                .uri("/api/v1/estacionamentos/check-out/{recibo}", "20230313-101300")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com.br", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody()
+                .jsonPath("status").isEqualTo(403)
+                .jsonPath("path").isEqualTo("/api/v1/estacionamentos/check-out/20230313-101300")
+                .jsonPath("method").isEqualTo("PUT");
+
+    }
+
 
 }
